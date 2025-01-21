@@ -2,10 +2,9 @@
 from enum import Enum
 import socket
 import pickle
-from time import sleep
 
 
-class Response_Code(Enum):
+class ResponseCode(Enum):
     """ Response codes for the communication between server & client """
     INVALID      = 0
     ACCEPT_DATA  = 1
@@ -73,13 +72,13 @@ class TCPickleServer:
         serialized_resp = client.recv(1024)
         response_code = pickle.loads(serialized_resp)
         if isinstance(response_code, int):
-            response_code = Response_Code(response_code)
+            response_code = ResponseCode(response_code)
             if self._debug:
                 print(f"[TCPickleServer] Got response code: {response_code}")
             match response_code:
-                case Response_Code.DECLINE_DATA:
+                case ResponseCode.DECLINE_DATA:
                     return False
-                case Response_Code.ACCEPT_DATA:
+                case ResponseCode.ACCEPT_DATA:
                     return True
                 case _:
                     err = f"[TCPickleServer] ERROR: Got an invalid response from the client! {response_code.value}"
@@ -120,12 +119,12 @@ class TCPickleServer:
             client.sendall(pickled)
             client.close()
         except socket.error as exc:
-            raise TCPickleException(f"Failed to send the data to the client! {exc}")
+            raise TCPickleException(f"Failed to send the data to the client! {exc}") from exc
         if self._debug:
             print("[TCPickleServer] Data has been sent!")
         return True
 
-
+#pylint: disable=C0103
 if __name__ == '__main__':
     server = TCPickleServer(debug=True)
     server.initialize()

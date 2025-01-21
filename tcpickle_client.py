@@ -5,7 +5,7 @@ from time import sleep
 from enum import Enum
 
 
-class Response_Code(Enum):
+class ResponseCode(Enum):
     """ Response codes for the communication between server & client """
     INVALID      = 0
     ACCEPT_DATA  = 1
@@ -72,15 +72,23 @@ class TCPickleClient:
         self._has_file_descriptor = True
         return True
 
-    def _respond_to_server(self, response: Response_Code):
+    def _respond_to_server(self, response: ResponseCode):
+        """ Transmits a response code to the server
+        Args:
+            response (ResponseCode): ResponseCode to send to the server
+        """
         if not self._has_file_descriptor:
             self.initialize()
         self._sock.sendall(pickle.dumps(response.value))
 
     def grab_data_from_server(self) -> any:
+        """ Function to grab data from the server
+        Returns:
+            any: Returns the received and unpickled python object
+        """
         if not self._has_file_descriptor:
             self.initialize()
-        self._respond_to_server(Response_Code.ACCEPT_DATA)
+        self._respond_to_server(ResponseCode.ACCEPT_DATA)
         if self._debug:
             print("[TCPickleClient] Waiting for the server to send the data ...")
         # read the chunks from the server
@@ -106,7 +114,7 @@ class TCPickleClient:
 
     def stop_server(self) -> None:
         """ Stops the server side from transferring more data """
-        self._respond_to_server(Response_Code.DECLINE_DATA)
+        self._respond_to_server(ResponseCode.DECLINE_DATA)
         if self._debug:
             print("[TCPickleClient] Decline issued to server")
         self._sock.close()
