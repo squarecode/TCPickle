@@ -38,7 +38,7 @@ class TCPickleClient:
 
     _CHUNK_SIZE = 4069
 
-    def __init__(self, server_ip: str = 'localhost', server_port: int = 50007, debug: bool = False):
+    def __init__(self, server_ip: str = 'localhost', server_port: int = 50008, debug: bool = True):
         self._ip = server_ip
         self._port = server_port
         self._debug = debug

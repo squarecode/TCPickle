@@ -1,5 +1,6 @@
 # pylint: disable=line-too-long
 from enum import Enum
+import random
 import socket
 import pickle
 
@@ -38,7 +39,7 @@ class TCPickleServer:
 
     _MAX_CONNECTIONS: int = 1
 
-    def __init__(self, server_ip: str = 'localhost', server_port: int = 50007, debug: bool = False):
+    def __init__(self, server_ip: str = 'localhost', server_port: int = 50008, debug: bool = True):
         self._ip = server_ip
         self._port = server_port
         self._debug = debug
@@ -130,5 +131,6 @@ if __name__ == '__main__':
     server.initialize()
     client_wants_data = True
     while client_wants_data:
-        client_wants_data = server.offer_data_to_client([1.0, 2.0, 3.0, 4.0, 5.0])
+        data_to_send = [random.gauss(10,1) for i in range(100)]
+        client_wants_data = server.offer_data_to_client(data_to_send)
     print("Server has been closed!")
